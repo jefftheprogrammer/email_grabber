@@ -9,7 +9,7 @@ def open_csv(filename):
     This function opens the csv unsing the filename
     """
     with open(filename) as csvfile:
-        reader = csv.reader(csvfile, delimiter='', quotechar='|')
+        reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in reader:
             list_str = ','.join(row)
         id_list = list(list_str)
