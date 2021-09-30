@@ -9,13 +9,12 @@ def open_csv(filename):
     This function opens the csv unsing the filename
     """
     with open(filename) as csvfile:
-        reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        reader = csv.reader(csvfile, delimiter=',')
+        id_list = []
         for row in reader:
-            list_str = ','.join(row)
-        id_list = list(list_str)
+            id_list.append(row[0])
 
     return id_list
-
 
 def remove_duplicates(id_list):
     """
@@ -37,7 +36,7 @@ def find_data(id_list):
     people_list = []
     for id in id_list:
         new_person = Query()
-        new_person.set_id(id)
+        new_person.id = id
         new_person.find_details()
         people_list.append(new_person)
     
@@ -45,16 +44,18 @@ def find_data(id_list):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(descrption="Find emails to the list of IDs.")
+    parser = argparse.ArgumentParser(description="Find emails to the list of IDs.")
     parser.add_argument('filename', 
                         type=str, 
                         nargs='+',
                         help="the filename of the .csv file"
                         )
     args = parser.parse_args()
-    filename = "{}.csv".format(args["filename"])
+    filename = "{}.csv".format(args.filename[0])
     id_list = open_csv(filename)
+    print("id list:{}".format(id_list))
     id_list = remove_duplicates(id_list)
+    print("id list without dup:{}".format(id_list))
     people = find_data(id_list)
     
     #####debugging######

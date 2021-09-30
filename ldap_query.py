@@ -1,4 +1,5 @@
-import ldap 
+import ldap
+import re 
 
 class Query():
     
@@ -6,15 +7,6 @@ class Query():
         self._email = None
         self._id = None
         self._name = None
-    
-    @id.setter
-    def id(self, num):
-        num_length = len(num)
-        if num_length < 7 or num_length > 8:
-            raise IdLengthError(num)
-        if num.matches("^[0-9]+$") == True:
-            raise IdNonNumberError(num)
-        self._id = num
 
     @property
     def email(self):
@@ -28,8 +20,18 @@ class Query():
     def id(self):
         return self._id
     
+    @id.setter
+    def id(self, num):
+        #print(num)
+        num_length = len(num)
+        if num_length < 7 or num_length > 8:
+            raise IdLengthError(num)
+        if re.match("^[0-9]+$", num) == True:
+            raise IdNonNumberError(num)
+        self._id = num
+    
     def find_details(self):
-        if set._id == None:
+        if self._id == None:
             raise IdIsNoneError
 
         try:
