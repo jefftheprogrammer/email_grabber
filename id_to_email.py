@@ -1,6 +1,6 @@
 import csv
-import ldap_query
 import argparse
+from ldap_query import *
 
 
 
@@ -34,7 +34,14 @@ def find_data(id_list):
     This function iterates through id_list
     and returns a list of emails and names.
     """
-    pass
+    people_list = []
+    for id in id_list:
+        new_person = Query()
+        new_person.set_id(id)
+        new_person.find_details()
+        people_list.append(new_person)
+    
+    return people_list
 
 
 if __name__ == "__main__":
@@ -48,4 +55,9 @@ if __name__ == "__main__":
     filename = "{}.csv".format(args["filename"])
     id_list = open_csv(filename)
     id_list = remove_duplicates(id_list)
+    people = find_data(id_list)
+    
+    #####debugging######
+    for person in people:
+        print("Name:{}, ID:{}, email:{}".format(person.name, person.id, person.email))
 
