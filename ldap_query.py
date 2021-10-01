@@ -42,7 +42,7 @@ class Query():
 
         baseDN = "OU=User,DC=soton,DC=ac,DC=uk"
         searchScope = ldap.SCOPE_SUBTREE
-        retrieveAttributes = ["givenName", "employeeNumber", "mail"]
+        retrieveAttributes = ["givenName", "initials", "sn", "employeeNumber", "mail"]
         searchFilter = "employeeNumber={}".format(self._id)
 
         try:
@@ -54,7 +54,7 @@ class Query():
                 else:
                     if result_type == ldap.RES_SEARCH_ENTRY:
                         for tup in result_data:
-                            self._name = tup[1]["givenName"][0].decode("utf-8")
+                            self._name = "{} {} {}".format(tup[1]["givenName"][0].decode("utf-8"), tup[1]["initials"][0].decode("utf-8"), tup[1]["sn"][0].decode("utf-8"))
                             self._email = tup[1]["mail"][0].decode("utf-8") 
         except ldap.LDAPError as e:
             print("Could not obtain information on that person")

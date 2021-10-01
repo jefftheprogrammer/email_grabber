@@ -1,6 +1,7 @@
-import csv
+from csv import writer, reader
 import argparse
 from ldap_query import *
+from os import path, remove
 
 
 
@@ -8,10 +9,10 @@ def open_csv(filename):
     """
     This function opens the csv unsing the filename
     """
-    with open(filename) as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
+    with open(filename) as csv_file:
+        file_reader = reader(csv_file, delimiter=',')
         id_list = []
-        for row in reader:
+        for row in file_reader:
             id_list.append(row[0])
 
     return id_list
@@ -42,6 +43,18 @@ def find_data(id_list):
     
     return people_list
 
+def export_csv(people):
+    if path.isfile("mailing_list_export.csv") == True:
+        remove("mailing_list_export.csv")
+    
+    with open("mailing_list_export.csv", "w") as csv_file:
+        file_writer = writer(csv_file)
+        for person in people:
+            file_writer.writerow([person.id,person.name,person.email])
+
+def tester(people):
+    for person in people:
+        print("Name:{}, ID:{}, email:{}".format(person.name, person.id, person.email))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Find emails to the list of IDs.")
@@ -50,6 +63,7 @@ if __name__ == "__main__":
                         nargs='+',
                         help="the filename of the .csv file"
                         )
+
     args = parser.parse_args()
     filename = "{}.csv".format(args.filename[0])
     id_list = open_csv(filename)
@@ -57,8 +71,6 @@ if __name__ == "__main__":
     id_list = remove_duplicates(id_list)
     print("id list without dup:{}".format(id_list))
     people = find_data(id_list)
-    
-    #####debugging######
-    for person in people:
-        print("Name:{}, ID:{}, email:{}".format(person.name, person.id, person.email))
+    export_csv(people)
+
 
